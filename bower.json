@@ -1,0 +1,22 @@
+{
+  "name": "angular-tmpl",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Daniel Staudigel <dstaudigel@gmail.com>"
+  ],
+  "license": "UNLICENSED",
+  "homepage": "https://github.com/dts/unix_config",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.3"
+  }
+}
