@@ -15,9 +15,6 @@ TARGETS=www/style.css www/vendor.js www/app.js $(TEMPLATES_JS)
 
 build: bower_components node_modules $(TARGETS)
 
-prepare: build
-	ionic prepare
-
 submodules: .PHONY
 	bash -c 'if [[ -z $$(cd src/lib/api-js && git status -s && cd ../ng-jsdata && git status -s ) ]]; then echo "Updating submodules..." && git submodule update --init;	fi'
 
@@ -26,7 +23,6 @@ bower_components: bower.json
 
 node_modules: package.json
 	npm install
-	npm rebuild node-sass
 	touch node_modules
 
 update: node_modules
