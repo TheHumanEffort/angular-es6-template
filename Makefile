@@ -13,7 +13,7 @@ VENDOR_JS=  \
 
 TARGETS=www/style.css www/vendor.js www/app.js $(TEMPLATES_JS)
 
-build: bower_components node_modules $(TARGETS)
+build: node_modules bower_components node_modules $(TARGETS)
 
 submodules: .PHONY
 	bash -c 'if [[ -z $$(cd src/lib/api-js && git status -s && cd ../ng-jsdata && git status -s ) ]]; then echo "Updating submodules..." && git submodule update --init;	fi'
@@ -60,11 +60,8 @@ www/app.js: $(SOURCE_JS)
 	$(WEBPACK) --devtool sourcemap $@
 
 serve: build
-	$(CONCURRENT) --kill-others "npm run watch-js" "npm run watch-templates" "npm run watch-sass" "npm run serve"
-
-device-serve: build
-	$(CONCURRENT) --kill-others "npm run watch-js" "npm run watch-templates" "npm run watch-sass" "cordova-hcp server" "ionic run && sleep 9999999"
-
+	rm www/app.js
+	$(CONCURRENT) --kill-others "npm run watch-sass" "npm run serve"
 
 help:
 	@echo 'make serve : builds and serves the app in a web browser'
