@@ -57,10 +57,10 @@ www/vendor.js: $(VENDOR_JS)
 
 www/app.js: $(SOURCE_JS)
 	@echo Compiling $(SOURCE_JS)
-	$(WEBPACK) --devtool sourcemap $@
+	$(UGLIFY) --source-map $@.map --source-map-include-sources --source-map-url app.js.map $^ -o $@
 
-serve: build
-	rm www/app.js
+serve: www/style.css www/vendor.js
+	rm -f www/app.js
 	$(CONCURRENT) --kill-others "npm run watch-sass" "npm run serve"
 
 help:
