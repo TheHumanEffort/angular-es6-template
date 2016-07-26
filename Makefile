@@ -11,9 +11,14 @@ SOURCE_JS=src/app.js $(shell find src/{components,views} -name '*.js' -or -name 
 VENDOR_JS=  \
 		bower_components/angular/angular.min.js
 
-TARGETS=www/style.css www/vendor.js www/app.js $(TEMPLATES_JS)
+TARGETS=www/index.html www/style.css www/vendor.js www/app.js $(TEMPLATES_JS)
 
 build: node_modules bower_components node_modules $(TARGETS)
+
+# for now, just copy the bad boy - in the future we can compile 'im
+www/index.html: src/index.html
+	cp $< $@
+
 
 submodules: .PHONY
 	bash -c 'if [[ -z $$(cd src/lib/api-js && git status -s && cd ../ng-jsdata && git status -s ) ]]; then echo "Updating submodules..." && git submodule update --init;	fi'
@@ -55,7 +60,7 @@ www/style.css: src/style.scss $(shell find src -name '*.scss' -or -name '*.css' 
 www/vendor.js: $(VENDOR_JS)
 	$(UGLIFY) --source-map $@.map --source-map-include-sources --source-map-url vendor.js.map $^ -o $@
 
-www/app.js: $(SOURCE_JS)
+www/app.js: $(SOURCE_JS) $(TEMPLATES_JS)
 	@echo Compiling $(SOURCE_JS)
 	$(UGLIFY) --source-map $@.map --source-map-include-sources --source-map-url app.js.map $^ -o $@
 

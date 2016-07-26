@@ -20,7 +20,7 @@ connect()
   .use(require('connect-livereload')({ port: lrPort }))
   .use(serveStatic(path.resolve(base)))
   .use(serveStatic(path.resolve(src)))
-  .use(serveIndex(path.resolve(base)))
+  .use(serveIndex(path.resolve(src)))
   .listen(port);
 
 lrServer = tinyLr();
@@ -33,12 +33,14 @@ function livereload(file) {
 
 var watch = require('watch');
 
-watch.watchTree('www', function(f, curr, prev) {
+watch.watchTree('.', function(f, curr, prev) {
   if (typeof f == 'object' && prev === null && curr === null) {
     // Finished walking the tree
   } else {
-    var file = f;// f.substring(4);
-    livereload(file);
+    if (f.match(/^(src|www)\//)) {
+      var file = f.substring(4);
+      livereload(file);
+    }
   } /*if (prev === null) {
     // f is a new file
   } else if (curr.nlink === 0) {
