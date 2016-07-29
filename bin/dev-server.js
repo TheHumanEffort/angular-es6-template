@@ -23,6 +23,8 @@ connect()
   .use(serveIndex(path.resolve(src)))
   .listen(port);
 
+console.log('SERVING AT PORT ' + port);
+
 lrServer = tinyLr();
 lrServer.listen(lrPort);
 

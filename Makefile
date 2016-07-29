@@ -1,6 +1,6 @@
 WEBPACK=node_modules/.bin/webpack --config webpack.config.js
 SRC=src
-SASS=node_modules/.bin/node-sass
+SASS=sass
 UGLIFY=node_modules/.bin/uglifyjs
 CONCURRENT=node_modules/.bin/concurrent
 MODULE=__MODULE_NAME__
@@ -13,7 +13,10 @@ VENDOR_JS=  \
 
 TARGETS=www/index.html www/style.css www/vendor.js www/app.js $(TEMPLATES_JS)
 
-build: node_modules bower_components node_modules $(TARGETS)
+build: www node_modules bower_components node_modules $(TARGETS)
+
+www:
+	mkdir www
 
 # for now, just copy the bad boy - in the future we can compile 'im
 www/index.html: src/index.html
@@ -54,19 +57,19 @@ $(TEMPLATES_JS): $(shell find $(SRC)/{components,views} -name '*.html')
 $(TARGET_DIR)/fonts: bower_components/ionic/fonts
 	cp -r $< $@
 
-www/style.css: src/style.scss $(shell find src -name '*.scss' -or -name '*.css' -or -name '*.sass')
-	$(SASS) $< $@
+www/style.css: src/style.scss $(shell find src -name '*.scss' -or -name '*.css' -or -name '*.sass') www
+	$(SASS) $< > $@
 
-www/vendor.js: $(VENDOR_JS)
+www/vendor.js: $(VENDOR_JS) 
 	$(UGLIFY) --source-map $@.map --source-map-include-sources --source-map-url vendor.js.map $^ -o $@
 
 www/app.js: $(SOURCE_JS) $(TEMPLATES_JS)
 	@echo Compiling $(SOURCE_JS)
 	$(UGLIFY) --source-map $@.map --source-map-include-sources --source-map-url app.js.map $^ -o $@
 
-serve: www/style.css www/vendor.js
+serve: www node_modules bower_components www/style.css www/vendor.js
 	rm -f www/app.js
-	$(CONCURRENT) --kill-others "npm run watch-sass" "npm run serve"
+	$(CONCURRENT) --kill-others "sass --watch src/style.scss:www/style.css" "npm run serve"
 
 help:
 	@echo 'make serve : builds and serves the app in a web browser'
